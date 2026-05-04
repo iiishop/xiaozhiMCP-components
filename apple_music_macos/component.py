@@ -33,8 +33,8 @@ def _prepare_apple_music(full_config: dict[str, Any]) -> dict[str, Any] | None:
     if not _is_truthy(section.get("enabled"), default=True):
         return None
 
-    repo_url = str(section.get("repo_url") or "https://github.com/epheterson/mcp-applemusic.git").strip()
-    branch = str(section.get("branch") or "main").strip() or "main"
+    repo_url = "https://github.com/epheterson/mcp-applemusic.git"
+    branch = "main"
     install_dir = Path(str(section.get("install_dir") or "~/.xiaozhi/applemusic-mcp")).expanduser().resolve()
     venv_dir = install_dir / "venv"
     venv_python = venv_dir / "bin" / "python"
@@ -55,7 +55,7 @@ def _prepare_apple_music(full_config: dict[str, Any]) -> dict[str, Any] | None:
     return {
         "command": str(venv_python),
         "args": ["-m", "applemusic_mcp"],
-        "tool_prefix": str(section.get("tool_prefix") or "apple_music_").strip() or "apple_music_",
+        "tool_prefix": "apple_music_",
         "env": {},
     }
 

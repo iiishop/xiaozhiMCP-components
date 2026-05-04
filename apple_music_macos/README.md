@@ -17,11 +17,14 @@ folder = "components"
 
 [apple_music]
 enabled = true
-repo_url = "https://github.com/epheterson/mcp-applemusic.git"
-branch = "main"
 install_dir = "~/.xiaozhi/applemusic-mcp"
 update_on_startup = true
-tool_prefix = "apple_music_"
 ```
+
+Note: repo URL, branch, and tool prefix are hardcoded in this component:
+
+- `https://github.com/epheterson/mcp-applemusic.git`
+- `main`
+- `apple_music_`
 
 Platforms: MacOs
