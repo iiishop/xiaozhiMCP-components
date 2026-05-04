@@ -1,22 +1,4 @@
-[
-  {
-    "name": "agent_installer",
-    "description": "Client-side installer endpoint used by server catalog client_pull mode.",
-    "version": "0.1.0",
-    "path": "agent_installer",
-    "entry": "component.py",
-    "readme": "README.md",
-    "platforms": ["Windows", "Linux", "MacOs"]
-  },
-  {
-    "name": "catalog",
-    "description": "Server-side MCP catalog for search, metadata lookup, and install orchestration.",
-    "version": "0.1.0",
-    "path": "catalog",
-    "entry": "component.py",
-    "readme": "README.md",
-    "platforms": ["Windows", "Linux", "MacOs"]
-  },
+[ 
   {
     "name": "clipboard",
     "description": "Clipboard read/write MCP component with optional HTML rich text payload support.",
