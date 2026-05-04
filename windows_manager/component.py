@@ -9,8 +9,6 @@ import win32con
 import win32gui
 import win32process
 
-from ..base import MCPComponent
-
 
 def normalize_windows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
@@ -184,7 +182,7 @@ def close_window(hwnd: int) -> None:
     win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
 
 
-class WindowsManagerComponent(MCPComponent):
+class WindowsManagerComponent:
     def export_tools(self) -> list[dict[str, Any]]:
         return [
             {"name": "windows_list_open_apps", "description": "List currently opened Windows desktop app windows.", "input_schema": {"type": "object", "properties": {}}},

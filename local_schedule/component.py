@@ -6,9 +6,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from ..base import MCPComponent
-
-VALID_STATUSES = {"鏈紑濮?, "杩涜涓?, "宸插畬鎴?}
+VALID_STATUSES = {"未开始", "进行中", "已完成"}
 
 
 def _parse_datetime(value: str) -> datetime:
@@ -48,7 +46,7 @@ class LocalScheduleStore:
                     title TEXT NOT NULL,
                     description TEXT NOT NULL DEFAULT '',
                     schedule_type TEXT NOT NULL DEFAULT 'range',
-                    status TEXT NOT NULL DEFAULT '鏈紑濮?,
+                    status TEXT NOT NULL DEFAULT '未开始',
                     start_ts INTEGER NOT NULL,
                     end_ts INTEGER NOT NULL,
                     start_time TEXT NOT NULL,
@@ -70,7 +68,7 @@ class LocalScheduleStore:
         if "schedule_type" not in existing:
             conn.execute("ALTER TABLE schedules ADD COLUMN schedule_type TEXT NOT NULL DEFAULT 'range'")
         if "status" not in existing:
-            conn.execute("ALTER TABLE schedules ADD COLUMN status TEXT NOT NULL DEFAULT '鏈紑濮?")
+            conn.execute("ALTER TABLE schedules ADD COLUMN status TEXT NOT NULL DEFAULT '未开始'")
         if "due_ts" not in existing:
             conn.execute("ALTER TABLE schedules ADD COLUMN due_ts INTEGER")
         if "due_time" not in existing:
@@ -83,7 +81,7 @@ class LocalScheduleStore:
         start_time: str = "",
         end_time: str = "",
         due_time: str = "",
-        status: str = "鏈紑濮?,
+        status: str = "未开始",
         description: str = "",
     ) -> dict[str, Any]:
         type_value = (schedule_type or "range").strip().lower()
@@ -94,9 +92,9 @@ class LocalScheduleStore:
         if not title_text:
             raise ValueError("title is required")
 
-        status_text = (status or "鏈紑濮?).strip()
+        status_text = (status or "未开始").strip()
         if status_text not in VALID_STATUSES:
-            raise ValueError("status must be one of: 鏈紑濮? 杩涜涓? 宸插畬鎴?)
+            raise ValueError("status must be one of: 未开始, 进行中, 已完成")
 
         due_iso = None
         due_ts = None
@@ -270,7 +268,7 @@ class LocalScheduleStore:
     def update_event_status(self, event_id: int, status: str) -> dict[str, Any]:
         status_text = (status or "").strip()
         if status_text not in VALID_STATUSES:
-            raise ValueError("status must be one of: 鏈紑濮? 杩涜涓? 宸插畬鎴?)
+            raise ValueError("status must be one of: 未开始, 进行中, 已完成")
 
         with closing(self._connect()) as conn:
             cur = conn.execute(
@@ -356,7 +354,7 @@ class LocalScheduleStore:
         return free_slots
 
 
-class LocalScheduleComponent(MCPComponent):
+class LocalScheduleComponent:
     def __init__(self, db_path: str | None = None) -> None:
         self.store = LocalScheduleStore(db_path=db_path)
 
@@ -374,7 +372,7 @@ class LocalScheduleComponent(MCPComponent):
             start_time: str = "",
             end_time: str = "",
             due_time: str = "",
-            status: str = "鏈紑濮?,
+            status: str = "未开始",
             description: str = "",
         ) -> dict:
             """Add local event. schedule_type=range uses start/end. schedule_type=deadline uses due_time."""
@@ -423,7 +421,7 @@ class LocalScheduleComponent(MCPComponent):
 
         @mcp.tool()
         def schedule_update_status(event_id: int, status: str) -> dict:
-            """Update event status: 鏈紑濮?/ 杩涜涓?/ 宸插畬鎴?"""
+            """Update event status: 未开始 / 进行中 / 已完成."""
             try:
                 result = self.store.update_event_status(event_id=event_id, status=status)
                 return {"success": True, **result}
@@ -541,7 +539,7 @@ class LocalScheduleComponent(MCPComponent):
                     start_time=str(arguments.get("start_time", "")),
                     end_time=str(arguments.get("end_time", "")),
                     due_time=str(arguments.get("due_time", "")),
-                    status=str(arguments.get("status", "鏈紑濮?)),
+                    status=str(arguments.get("status", "未开始")),
                     description=str(arguments.get("description", "")),
                 )
                 return {"success": True, "event": event}

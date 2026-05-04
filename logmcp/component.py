@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 from typing import Any
-
-from ..base import MCPComponent
 from error_store import ErrorStore
 
 
-class LogMCPComponent(MCPComponent):
+class LogMCPComponent:
     def __init__(self, db_path: str | None = None) -> None:
         self.store = ErrorStore(db_path=db_path)
 

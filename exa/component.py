@@ -7,8 +7,6 @@ from typing import Any
 
 import requests
 
-from ..base import MCPComponent
-
 logger = logging.getLogger("exa_component")
 
 ALLOWED_SEARCH_TYPES = {
@@ -127,7 +125,7 @@ def _extract_snippet(row: dict[str, Any], mode: str) -> str:
     return str(row.get("text", "") or row.get("snippet", ""))
 
 
-class ExaSearchComponent(MCPComponent):
+class ExaSearchComponent:
     def __init__(self, api_key: str | None = None, base_url: str | None = None) -> None:
         self.api_key = api_key or os.getenv("EXA_API_KEY", "")
         self.base_url = (base_url or os.getenv("EXA_BASE_URL", "https://api.exa.ai")).rstrip("/")

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..base import MCPComponent
-
 
 def build_cf_html_payload(fragment_html: str) -> bytes:
     fragment = fragment_html or ""
@@ -80,7 +78,7 @@ def get_windows_clipboard_text() -> str:
         win32clipboard.CloseClipboard()
 
 
-class ClipboardComponent(MCPComponent):
+class ClipboardComponent:
     def export_tools(self) -> list[dict[str, Any]]:
         return [
             {
