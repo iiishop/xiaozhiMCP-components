@@ -22,6 +22,7 @@ This component has no required or optional configuration. It works out of the bo
 ## Usage Notes
 
 - Windows only. Requires `pywin32` installed (`pip install pywin32`).
+- On non-Windows or missing-`pywin32` environments, importing the component is safe; tool calls return a clear runtime error instead of import-time crashes.
 - Window focusing uses a three-strategy fallback to maximize success rate.
 - Duplicate windows (same title + PID) are deduplicated.
 

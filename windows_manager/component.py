@@ -5,10 +5,21 @@ import subprocess
 import ctypes
 from typing import Any
 
-import win32con
-import win32gui
-import win32process
+RUNTIME_ERROR_MESSAGE = (
+    "windows_manager is only available on Windows with pywin32 installed "
+    "(pip install pywin32)."
+)
 
+
+def _load_win32_modules() -> tuple[Any, Any, Any]:
+    try:
+        import win32con  # type: ignore[import-not-found]
+        import win32gui  # type: ignore[import-not-found]
+        import win32process  # type: ignore[import-not-found]
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(RUNTIME_ERROR_MESSAGE) from exc
+
+    return win32con, win32gui, win32process
 
 def normalize_windows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
@@ -62,6 +73,7 @@ def merge_windows_with_process_stats(rows: list[dict[str, Any]], stats: dict[int
 
 
 def list_open_windows() -> list[dict[str, Any]]:
+    win32con, win32gui, win32process = _load_win32_modules()
     windows: list[dict[str, Any]] = []
 
     def _enum(hwnd: int, _: int) -> bool:
@@ -138,6 +150,7 @@ def _fetch_process_stats(pids: list[int]) -> dict[int, dict[str, float]]:
 
 
 def _is_foreground(hwnd: int) -> bool:
+    _, win32gui, _ = _load_win32_modules()
     try:
         return int(win32gui.GetForegroundWindow()) == int(hwnd)
     except Exception:  # noqa: BLE001
@@ -145,6 +158,7 @@ def _is_foreground(hwnd: int) -> bool:
 
 
 def focus_window(hwnd: int) -> dict[str, Any]:
+    win32con, win32gui, _ = _load_win32_modules()
     target = int(hwnd)
     try:
         win32gui.ShowWindow(target, win32con.SW_RESTORE)
@@ -179,6 +193,7 @@ def focus_window(hwnd: int) -> dict[str, Any]:
 
 
 def close_window(hwnd: int) -> None:
+    win32con, win32gui, _ = _load_win32_modules()
     win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
 
 
@@ -195,6 +210,11 @@ class WindowsManagerComponent:
     def invoke_tool(self, tool_name: str, arguments: dict[str, Any]) -> dict:
         keyword = str(arguments.get("keyword", ""))
         match_index = int(arguments.get("match_index", 1))
+
+        try:
+            _load_win32_modules()
+        except RuntimeError as exc:
+            return {"ok": False, "success": False, "error": str(exc)}
 
         if tool_name == "windows_list_open_apps":
             rows = list_open_windows()
@@ -228,21 +248,31 @@ class WindowsManagerComponent:
         @mcp.tool()
         def windows_list_open_apps() -> dict:
             """List currently opened Windows desktop app windows."""
-            rows = list_open_windows()
-            apps = normalize_windows(rows)
-            return {"success": True, "count": len(apps), "apps": apps}
+            try:
+                rows = list_open_windows()
+                apps = normalize_windows(rows)
+                return {"success": True, "count": len(apps), "apps": apps}
+            except RuntimeError as exc:
+                return {"success": False, "error": str(exc)}
 
         @mcp.tool()
         def windows_find_apps(keyword: str) -> dict:
             """Find opened app windows by title keyword (case-insensitive)."""
-            rows = filter_windows_by_keyword(list_open_windows(), keyword)
-            apps = normalize_windows(rows)
-            return {"success": True, "keyword": keyword, "count": len(apps), "apps": apps}
+            try:
+                rows = filter_windows_by_keyword(list_open_windows(), keyword)
+                apps = normalize_windows(rows)
+                return {"success": True, "keyword": keyword, "count": len(apps), "apps": apps}
+            except RuntimeError as exc:
+                return {"success": False, "error": str(exc), "keyword": keyword}
 
         @mcp.tool()
         def windows_focus_app(keyword: str, match_index: int = 1) -> dict:
             """Focus an opened app window by title keyword. Use match_index when multiple matches exist."""
-            rows = filter_windows_by_keyword(list_open_windows(), keyword)
+            try:
+                rows = filter_windows_by_keyword(list_open_windows(), keyword)
+            except RuntimeError as exc:
+                return {"success": False, "error": str(exc), "keyword": keyword}
+
             target = select_window_match(rows, match_index)
             if target is None:
                 return {
@@ -267,7 +297,11 @@ class WindowsManagerComponent:
         @mcp.tool()
         def windows_close_app(keyword: str, match_index: int = 1) -> dict:
             """Request close for an opened app window by title keyword."""
-            rows = filter_windows_by_keyword(list_open_windows(), keyword)
+            try:
+                rows = filter_windows_by_keyword(list_open_windows(), keyword)
+            except RuntimeError as exc:
+                return {"success": False, "error": str(exc), "keyword": keyword}
+
             target = select_window_match(rows, match_index)
             if target is None:
                 return {
@@ -291,7 +325,11 @@ class WindowsManagerComponent:
         @mcp.tool()
         def windows_list_app_performance(keyword: str = "") -> dict:
             """List opened windows with process CPU seconds and memory usage in MB, optionally filtered by keyword."""
-            rows = filter_windows_by_keyword(list_open_windows(), keyword)
+            try:
+                rows = filter_windows_by_keyword(list_open_windows(), keyword)
+            except RuntimeError as exc:
+                return {"success": False, "error": str(exc), "keyword": keyword}
+
             pids = [int(row.get("pid", 0)) for row in rows]
             stats = _fetch_process_stats(pids)
             apps = merge_windows_with_process_stats(rows, stats)

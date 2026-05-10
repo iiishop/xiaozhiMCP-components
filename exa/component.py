@@ -240,10 +240,71 @@ class ExaSearchComponent:
                 "input_schema": {
                     "type": "object",
                     "properties": {
-                        "keywords": {"type": "string"},
-                        "num_results": {"type": "integer"},
-                        "search_type": {"type": "string"},
-                        "content_mode": {"type": "string"},
+                        "keywords": {
+                            "type": "string",
+                            "description": "Search query keywords.",
+                        },
+                        "num_results": {
+                            "type": "integer",
+                            "default": 5,
+                            "minimum": 1,
+                            "maximum": 100,
+                            "description": "Desired result count (clamped to 1-100).",
+                        },
+                        "search_type": {
+                            "type": "string",
+                            "enum": sorted(ALLOWED_SEARCH_TYPES),
+                            "default": "auto",
+                            "description": "Exa search strategy.",
+                        },
+                        "content_mode": {
+                            "type": "string",
+                            "enum": sorted(ALLOWED_CONTENT_MODES),
+                            "default": "highlights",
+                            "description": "Returned content field mode.",
+                        },
+                        "max_characters": {
+                            "type": "integer",
+                            "default": 1400,
+                            "minimum": 300,
+                            "maximum": 12000,
+                            "description": "Character budget for text/highlights content.",
+                        },
+                        "max_age_hours": {
+                            "type": ["integer", "null"],
+                            "default": None,
+                            "description": "Optional recency filter in hours.",
+                        },
+                        "include_domains_csv": {
+                            "type": "string",
+                            "default": "",
+                            "description": "Comma-separated domain allowlist.",
+                        },
+                        "exclude_domains_csv": {
+                            "type": "string",
+                            "default": "",
+                            "description": "Comma-separated domain blocklist.",
+                        },
+                        "category": {
+                            "type": "string",
+                            "default": "",
+                            "description": "Optional Exa category field.",
+                        },
+                        "summary_query": {
+                            "type": "string",
+                            "default": "",
+                            "description": "Optional query used for highlights/summary generation.",
+                        },
+                        "output_schema_json": {
+                            "type": "string",
+                            "default": "",
+                            "description": "Optional JSON schema string for structured output.",
+                        },
+                        "system_prompt": {
+                            "type": "string",
+                            "default": "",
+                            "description": "Optional system prompt used by Exa.",
+                        },
                     },
                     "required": ["keywords"],
                 },

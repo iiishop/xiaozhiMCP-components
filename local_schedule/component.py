@@ -27,7 +27,7 @@ def _to_iso(dt: datetime) -> str:
 
 class LocalScheduleStore:
     def __init__(self, db_path: str | None = None) -> None:
-        default_path = Path(__file__).with_name("local_schedule.sqlite3")
+        default_path = Path.home() / ".xiaozhi_mcp" / "local_schedule" / "local_schedule.sqlite3"
         self.db_path = Path(db_path) if db_path else default_path
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
