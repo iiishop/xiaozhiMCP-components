@@ -29,7 +29,7 @@ def _prepare_apple_music(full_config: dict[str, Any]) -> dict[str, Any] | None:
     if platform.system().lower() != "darwin":
         return None
 
-    section = full_config.get("apple_music") if isinstance(full_config.get("apple_music"), dict) else {}
+    section = full_config.get("apple_music_macos") if isinstance(full_config.get("apple_music_macos"), dict) else {}
     if not _is_truthy(section.get("enabled"), default=True):
         return None
 
@@ -172,7 +172,7 @@ class Component:
         try:
             self._bridge_cfg = _prepare_apple_music(self.full_config)
             if self._bridge_cfg is None:
-                self._error = "apple_music disabled or non-macos"
+                self._error = "apple_music_macos disabled or non-macos"
                 return None
             cmd = [str(self._bridge_cfg.get("command", ""))]
             cmd.extend([str(x) for x in (self._bridge_cfg.get("args") or [])])

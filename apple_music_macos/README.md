@@ -16,7 +16,7 @@ All upstream `mcp-applemusic` tools are proxied with an `apple_music_` prefix (e
 ## Config
 
 ```toml
-[apple_music]
+[apple_music_macos]
 enabled = true
 install_dir = "~/.xiaozhi/applemusic-mcp"
 update_on_startup = true
