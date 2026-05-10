@@ -149,11 +149,11 @@ Any important notes about behavior, limitations, or setup.
 Platforms: Windows|Linux|MacOs
 ```
 
-**Critical**: The LAST line of the README must be exactly:
+**Critical**: The LAST line of the README must follow this format:
 ```
-Platforms: Windows|Linux|MacOs
+Platforms: <Platform1>|<Platform2>|...
 ```
-Valid platform tokens: `Windows`, `Linux`, `MacOs` (pipe-separated). This line is parsed by the catalog system to determine platform compatibility.
+Valid platform tokens: `Windows`, `Linux`, `MacOs` (pipe-separated, no extra spaces). This line is parsed by the catalog system to determine platform compatibility and must match the component's `index.json` `platforms` field.
 
 ## Config Convention
 

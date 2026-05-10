@@ -7,6 +7,10 @@ Windows clipboard read/write MCP component. Supports plain text and optional HTM
 - `clipboard_set(content, content_html)` — Copy text to the Windows clipboard. Use `content_html` for rich-text formatting.
 - `clipboard_get()` — Read current Windows clipboard text content.
 
+## Config
+
+This component has no required or optional configuration. It works out of the box when enabled.
+
 ## Dependencies
 
 - `pywin32` (Windows clipboard API)
