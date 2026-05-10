@@ -15,7 +15,7 @@ SQLite-backed local schedule/calendar manager MCP component. Supports range-type
 
 ```toml
 [local_schedule]
-db_path = ""  # optional; defaults to local_schedule.sqlite3 next to component.py
+db_path = ""  # optional; defaults to ~/.xiaozhi_mcp/local_schedule/local_schedule.sqlite3
 ```
 
 ## Dependencies
@@ -26,6 +26,7 @@ db_path = ""  # optional; defaults to local_schedule.sqlite3 next to component.p
 
 - All times are ISO 8601 datetime strings (e.g., `2026-05-10T14:00:00`).
 - Auto-migrates schema on startup for backward compatibility.
+- If `db_path` is not configured, data is stored in the user's home directory (`~/.xiaozhi_mcp/local_schedule/local_schedule.sqlite3`) instead of the source tree.
 - Cross-platform: works on Windows, Linux, and macOS.
 
 Platforms: Windows|Linux|MacOs

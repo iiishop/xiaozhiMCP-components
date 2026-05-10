@@ -25,6 +25,7 @@ Alternatively, set the `EXA_API_KEY` environment variable.
 ## Usage Notes
 
 - Response size is auto-trimmed to stay under ~1KB for LLM context efficiency.
+- Remote schema exposes all supported advanced arguments (`max_characters`, `max_age_hours`, domain filters, `category`, `summary_query`, `output_schema_json`, `system_prompt`) with defaults.
 - Cross-platform: works on Windows, Linux, and macOS.
 
 Platforms: Windows|Linux|MacOs
