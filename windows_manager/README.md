@@ -10,6 +10,10 @@ Windows desktop window/application management MCP component. Enumerate, find, fo
 - `windows_close_app(keyword, match_index)` — Close a window via `WM_CLOSE` message.
 - `windows_list_app_performance(keyword)` — List windows with CPU seconds and working set (MB), optionally filtered by keyword.
 
+## Config
+
+This component has no required or optional configuration. It works out of the box when enabled.
+
 ## Dependencies
 
 - `pywin32` (Win32 GUI and process APIs)
