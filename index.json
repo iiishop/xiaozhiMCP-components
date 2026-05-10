@@ -36,15 +36,6 @@
     "platforms": ["Windows", "Linux", "MacOs"]
   },
   {
-    "name": "logmcp",
-    "description": "Server-side runtime/error log MCP component backed by SQLite.",
-    "version": "0.1.0",
-    "path": "logmcp",
-    "entry": "component.py",
-    "readme": "README.md",
-    "platforms": ["Windows", "Linux", "MacOs"]
-  },
-  {
     "name": "windows_manager",
     "description": "Windows window/application management MCP component.",
     "version": "0.1.0",
